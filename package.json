@@ -1,0 +1,22 @@
+{
+  "name": "voice-tic-tac-toe",
+  "version": "1.0.0",
+  "description": "Voice Tic Tac Toe",
+  "main": "tictactoe.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Voice",
+    "tic",
+    "tac",
+    "toe"
+  ],
+  "author": "Marcellus Pelcher <pelcher@gmail.com> (medium.com/@syscoder)",
+  "license": "MIT",
+  "dependencies": {
+    "dashbot": "^0.8.4",
+    "dotenv": "^4.0.0",
+    "tic-tac-toe-ai-engine": "^1.0.7"
+  }
+}
