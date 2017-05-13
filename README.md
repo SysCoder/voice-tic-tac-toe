@@ -3,7 +3,7 @@
 * The source code is an interfaced to https://www.npmjs.com/package/tic-tac-toe-ai-engine
 * The source code is in a very raw state. When this was built I opted for just getting it done vs. readability.
 
-# Wish list:
+# Wish list
 * Use https://www.npmjs.com/package/tic-tac-toe-ai-engine
 * General readability improvements
 * Add a level that is called annoying that will tell the user when he/she lost before the game is over.
