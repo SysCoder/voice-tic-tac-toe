@@ -9,6 +9,53 @@ var ticTacToe = require('tictactoe');
 
 // console.log('starting function')
 
+var LIST_OF_MOVES = [
+  "Up left",
+  "Left up",
+  "Up",
+  "Up right",
+  "Right up",
+  "Center left",
+  "Left center",
+  "Left",
+  "Center",
+  "Center right",
+  "Right center",
+  "Right",
+  "Down left",
+  "Left down",
+  "Down",
+  "Down right",
+  "Right down",
+  "Top left",
+  "Left top",
+  "Top",
+  "Top right",
+  "Right top",
+  "Middle left",
+  "Left middle",
+  "Left",
+  "Middle",
+  "Middle right",
+  "Right middle",
+  "Right",
+  "Bottom left",
+  "Left bottom",
+  "Bottom",
+  "Bottom right",
+  "Right bottom",
+  "Upper left",
+  "Left upper",
+  "Upper",
+  "Upper right",
+  "Right upper",
+  "Lower left",
+  "Left lower",
+  "Lower",
+  "Lower right",
+  "Right lower",
+];
+
 exports.handle = function(event, ctx, callback) {
     dashbot.logIncoming(event);
     // console.log('processing event: %j', event);
@@ -18,12 +65,13 @@ exports.handle = function(event, ctx, callback) {
     if(event.result.action === "change_level") {
         let level = event.result.parameters.Levels;
 
+        let googleData = displayBoardGoogleData("Okay, curent level is: " + level, getBoardFromContext(event));
         let fulfillment = {
             speech: "Okay, curent level is: " + level,
             source: "TicTacToe Engine!",
             displayText: "Okay, curent level is: " + level,
+            'data': {"google": googleData},
         }
-
         var gameContext = [
           {
               "name": "game",
@@ -50,11 +98,12 @@ exports.handle = function(event, ctx, callback) {
 
     // Needed for middle of the game
     if(event.result.action === "restart_game") {
-
+        let googleData = displayBoardGoogleData("Okay, new game.", "000000000");
         let fulfillment = {
             speech: "Okay, new game.",
             source: "TicTacToe Engine!",
             displayText: "Okay, new game.",
+            'data': {"google": googleData},
         }
         // Save to session state on device
 
@@ -84,12 +133,122 @@ exports.handle = function(event, ctx, callback) {
         return;
     }
 
-    if(!validMoveUtterence(event)) {
+    // Needed for middle of the game
+    if(event.result.action === "SHOW_BOARD") {
+
+        let simpleResponse =  {
+              'type': 'simple_response',
+              'platform': 'google',
+              'text_to_speech': 'Simple response one'
+            };
+
+        let basicCard = {
+          'type': 'basic_card',
+          'platform': 'google',
+          'formatted_text': 'my text',
+          "image": "http://fm.cnbc.com/applications/cnbc.com/resources/styles/skin/INTERNAL/EXPERIMENTS/GOOGLE_ACTION/img/google_assistant.png",
+          'buttons': []
+        };
+
+        let googleData = {
+          "expect_user_response": true,
+          "rich_response": {
+            "items": [
+              {
+                "simple_response": {
+                  "text_to_speech": "Here is the board: "
+                }
+              },
+              {
+                "basic_card": {
+                  "image": {
+                    "url": "https://s3-us-west-2.amazonaws.com/tic-tac-toe-boards/boardImages/" + getBoardFromContext(event) +".png",
+                    "accessibility_text": "Tic Tac Toe game board"
+                  },
+                }
+              },
+            ],
+          }
+        };
+
         let fulfillment = {
-            speech: "I didn't quite understand you, can you say that again?",
+          'speech': 'Hi! hello',
+          'data': {"google": googleData},
+        };
+        // Save to session state on device
+
+        // console.log("Used session board");
+        var gameContext = [
+          {
+              "name": "game",
+              "parameters": {
+                "board": getBoardFromContext(event),
+              },
+            "lifespan": 100
+          },
+          {
+              "name": "level",
+              "parameters": {
+                "level": getLevelFromContext(event),
+              },
+            "lifespan": 100
+          }
+        ];
+        fulfillment.contextOut = gameContext;
+
+        dashbot.logOutgoing(event, fulfillment);
+        callback(null, fulfillment);
+        return;
+    }
+
+    let parameters = event.result.parameters;
+
+    let tryingToTripBot = (parameters.Location === "Left" && parameters.Location1 === "Right")
+        || (parameters.Location === "Right" && parameters.Location1 === "Left")
+        || (parameters.Location === "Top" && parameters.Location1 === "Bottom")
+        || (parameters.Location === "Bottom" && parameters.Location1 === "Top")
+        || (parameters.Location === "Left" && parameters.Location1 === "Left")
+        || (parameters.Location === "Right" && parameters.Location1 === "Right")
+        || (parameters.Location === "Bottom" && parameters.Location1 === "Bottom")
+        || (parameters.Location === "Top" && parameters.Location1 === "Top");
+
+    if(!validMoveUtterence(event) || tryingToTripBot) {
+        let didntUnderstand = [
+          "I had trouble understanding you, can you say that again?",
+          "Sometimes I have trouble understanding, please say that again.",
+          "Where are you trying to move to?",
+          "What location do you want to move to?",
+          "Where are you trying to move to?",
+          "What location do you want to move to?",
+          "Where are you trying to move to?",
+          "What location do you want to move to?",
+        ];
+        let didntUnderstandReply =  getRandomeElementInArray(didntUnderstand);
+        let fulfillment = {
+            speech: didntUnderstandReply,
             source: "TicTacToe Engine!",
-            displayText: "I didn't quite understand you, can you say that again?",
+            displayText: didntUnderstandReply,
         }
+
+        if (tryingToTripBot) {
+          let tripUpReplies = [
+            "Um.... hold on... that does not make sense. Try another location",
+            "What are you trying to do? You know and I know, that is not a valid location.",
+            "Tricky tricky... that's invalid and you know it! Try again.",
+            "Are you trying to cause me to have an error? Please pick a sensible location.",
+            "Your move was " + createTextMove(parameters) + ". I moved.... wait, that does not make sense. Try again.",
+            "Your move was " + createTextMove(parameters) + ". Which does not make sense. Try again.",
+            "Your move was " + createTextMove(parameters) + ". Error, Error, Error, I am crashing! Psych!!! Do you want to play or just test me?",
+          ];
+
+          let tripUpResponse = getRandomeElementInArray(tripUpReplies);
+          fulfillment = {
+              speech: tripUpResponse,
+              source: "TicTacToe Engine!",
+              displayText: tripUpResponse,
+          }
+        }
+
         // Save to session state on device
 
         // console.log("Used session board");
@@ -128,15 +287,22 @@ exports.handle = function(event, ctx, callback) {
     responseToPlayer(databaseBoard, event, callback);
 }
 
+function getRandomeElementInArray(someArray) {
+  return someArray[Math.floor(Math.random()*someArray.length)]
+}
+
 function validMoveUtterence(event) {
 
   let utterence = event.result.resolvedQuery.toLowerCase();
   let filteredUtterence = utterence
     .replace("to ", "")
+    .replace("the ", "")
     .replace("move ", "")
     .replace("center ", "")
     .replace("middle ", "")
-    .replace(" corner", "");
+    .replace(" corner", "")
+    .replace(" square", "")
+    .replace(" spot", "");
 
 
   let numberOfFilteredWordsInUtterence = filteredUtterence.split(' ').length;
@@ -242,13 +408,35 @@ function responseToPlayer(databaseBoard, event, callback) {
     ];
 
     if (ticTacToe.determineWinner(board) === 3) {
-        var responseBack = "Your move was " + createTextMove(parameters) + ". Draw! Do you want to play again?";
+        var responseBack = "Your move was " + createTextMove(parameters) + ". Draw! Do you want to play again? You can change the level by saying \"Change level to easy.\"";
 
+        let googleData = {
+          "expect_user_response": true,
+          "rich_response": {
+            "items": [
+              {
+                "simple_response": {
+                  "text_to_speech": responseBack,
+                }
+              },
+              {
+                "basic_card": {
+                  "image": {
+                    "url": "https://s3-us-west-2.amazonaws.com/tic-tac-toe-boards/boardImages/" + sessionOutputBoard +".png",
+                    "accessibility_text": "Tic Tac Toe game board"
+                  },
+                }
+              },
+            ],
+          },
+          "speechBiasingHints": LIST_OF_MOVES,
+        };
         let fulfillment = {
             speech: responseBack,
             source: "TicTacToe Engine!",
             displayText: responseBack,
             contextOut: gameEndedContext,
+            'data': {"google": googleData},
         }
         dashbot.logOutgoing(event, fulfillment);
         callback(null, fulfillment);
@@ -259,11 +447,33 @@ function responseToPlayer(databaseBoard, event, callback) {
     if (ticTacToe.determineWinner(board) !== 0 && nextMove.length== [0, 0, 0, 0, 0, 0, 0, 0, 0].length && nextMove.every(function(v,i) { return v === [0, 0, 0, 0, 0, 0, 0, 0, 0][i]})) {
         var responseBack = "Your move was " + createTextMove(parameters) +  ". " + "You won! Do you want to play again? You can change the level by saying \"Change level to impossible.\"";
 
+        let googleData = {
+          "expect_user_response": true,
+          "rich_response": {
+            "items": [
+              {
+                "simple_response": {
+                  "text_to_speech": responseBack,
+                }
+              },
+              {
+                "basic_card": {
+                  "image": {
+                    "url": "https://s3-us-west-2.amazonaws.com/tic-tac-toe-boards/boardImages/" + sessionOutputBoard +".png",
+                    "accessibility_text": "Tic Tac Toe game board"
+                  },
+                }
+              },
+            ],
+          },
+          "speechBiasingHints": LIST_OF_MOVES,
+        };
         let fulfillment = {
             speech: responseBack,
             source: "TicTacToe Engine!",
             displayText: responseBack,
             contextOut: gameEndedContext,
+            'data': {"google": googleData},
         }
         dashbot.logOutgoing(event, fulfillment);
         callback(null, fulfillment);
@@ -272,13 +482,36 @@ function responseToPlayer(databaseBoard, event, callback) {
 
 
     if (ticTacToe.determineWinner(outputBoard) !== 0) {
-        var responseBack = "Your move was " + createTextMove(parameters) + ". I moved " + createTextMove(textNextMove) + ". I won. Do you want to play again?";
+        var responseBack = "Your move was " + createTextMove(parameters) + ". I moved " + createTextMove(textNextMove) + ". I won. Do you want to play again? You can change the level by saying \"Change level to easy.\"";
 
+
+        let googleData = {
+          "expect_user_response": true,
+          "rich_response": {
+            "items": [
+              {
+                "simple_response": {
+                  "text_to_speech": responseBack,
+                }
+              },
+              {
+                "basic_card": {
+                  "image": {
+                    "url": "https://s3-us-west-2.amazonaws.com/tic-tac-toe-boards/boardImages/" + sessionOutputBoard +".png",
+                    "accessibility_text": "Tic Tac Toe game board"
+                  },
+                }
+              },
+            ],
+          },
+          "speechBiasingHints": LIST_OF_MOVES,
+        };
         let fulfillment = {
             speech: responseBack,
             source: "TicTacToe Engine!",
             displayText: responseBack,
             contextOut: gameEndedContext,
+            'data': {"google": googleData},
         }
         dashbot.logOutgoing(event, fulfillment);
         callback(null, fulfillment);
@@ -287,14 +520,61 @@ function responseToPlayer(databaseBoard, event, callback) {
 
     var responseBack = "Your move was " + createTextMove(parameters) + ". I moved " + createTextMove(textNextMove);
 
+
+    let googleData = {
+      "expect_user_response": true,
+      "rich_response": {
+        "items": [
+          {
+            "simple_response": {
+              "text_to_speech": responseBack,
+            }
+          },
+          {
+            "basic_card": {
+              "image": {
+                "url": "https://s3-us-west-2.amazonaws.com/tic-tac-toe-boards/boardImages/" + sessionOutputBoard +".png",
+                "accessibility_text": "Tic Tac Toe game board"
+              },
+            }
+          },
+        ],
+      },
+      "speechBiasingHints": LIST_OF_MOVES,
+    };
     let fulfillment = {
         speech: responseBack,
         source: "TicTacToe Engine",
         displayText: responseBack,
         contextOut: gameContext,
+        'data': {"google": googleData},
     }
     dashbot.logOutgoing(event, fulfillment);
     callback(null, fulfillment)
+}
+
+function displayBoardGoogleData(speech, sessionOutputBoard) {
+  return {
+    "expect_user_response": true,
+    "rich_response": {
+      "items": [
+        {
+          "simple_response": {
+            "text_to_speech": speech,
+          }
+        },
+        {
+          "basic_card": {
+            "image": {
+              "url": "https://s3-us-west-2.amazonaws.com/tic-tac-toe-boards/boardImages/" + sessionOutputBoard +".png",
+              "accessibility_text": "Tic Tac Toe game board"
+            },
+          }
+        },
+      ],
+    },
+    "speechBiasingHints": LIST_OF_MOVES,
+  };
 }
 
 function createTextMove(parameters) {
