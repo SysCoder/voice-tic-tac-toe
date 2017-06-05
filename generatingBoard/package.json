@@ -1,0 +1,15 @@
+{
+  "name": "tic-tac-toe-image-generator",
+  "version": "1.0.0",
+  "description": "Generates all images for the game state for tic tac toe",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Marcellus Pelcher <pelcher@gmail.com> (medium.com/@syscoder)",
+  "license": "MIT",
+  "dependencies": {
+    "jimp": "^0.2.28",
+    "merge-images": "^1.0.4"
+  }
+}
