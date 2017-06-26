@@ -275,9 +275,6 @@ function numberOfEmptyLocation(board) {
 }
 
 exports.determineWinner = function (board) {
-    if (numberOfEmptyLocation(board) === 0) {
-        return 3;
-    }
     // Check horizontal.
     for (var i = 0;i < 3;i++) {
         if (board[i * 3 + 0] === board[i * 3 + 1]
@@ -308,6 +305,9 @@ exports.determineWinner = function (board) {
 
     if (bottomLeftToTopRight || topLeftToBottomRight) {
         return middle;
+    }
+    if (numberOfEmptyLocation(board) === 0) {
+        return 3;
     }
 
     return 0;
