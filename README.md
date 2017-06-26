@@ -10,3 +10,5 @@
 
 I plan to refactor in the open. If you have any suggestions, send a feature request or pull request.
 Don't shy away from criticizing! My hope is that I get input from other people on the readability and design.
+
+https://www.voicetictactoe.info/
