@@ -14,6 +14,9 @@ exports.voiceTicTacToe = functions.https.onRequest((request, response) => {
         request,
         response
     });
+    const hasScreen = app.hasSurfaceCapability(app.SurfaceCapabilities.SCREEN_OUTPUT);
+    const screenAvaiable = app.hasAvailableSurfaceCapabilities(app.SurfaceCapabilities.SCREEN_OUTPUT);
+
     dashbot.configHandler(app);
     console.log('Request headers: ' + JSON.stringify(request.headers));
     console.log('Request body: ' + JSON.stringify(request.body));
@@ -47,22 +50,39 @@ exports.voiceTicTacToe = functions.https.onRequest((request, response) => {
       app.ask(response);
     }
 
-    // Needed for middle of the game
     function showBoard(app) {
-      let response = displayBoardGoogleData(app, "Here is the board: ", currentBoard);
+      if (hasScreen) {
+        let response = displayBoardGoogleData(
+          app, "Here is the board: ", currentBoard);
+        app.ask(response);
+      } else if (screenAvaiable) {
+            app.askForNewSurface(
+              "Your current device does not have a screen.",
+              "Tic Tac Toe Board",
+              [app.SurfaceCapabilities.SCREEN_OUTPUT]);
+      } else {
+        app.ask("I am sorry, I can't show the board to you.");
+      }
+    }
 
-      app.setContext("game_board", 100, {"game": currentBoard});
-      app.setContext("level", 100, {"level": currentLevel});
-      app.ask(response);
+    function newSurface(app) {
+      if (app.isNewSurface()) {
+        let response = displayBoardGoogleData(
+          app, "Okay, here is the board: ", currentBoard);
+        app.ask(response);
+      } else {
+        app.ask("Okay, what's your move?");
+      }
     }
 
     const actionMap = new Map();
     actionMap.set('change_level', changeLevel);
     actionMap.set('restart_game', restartGame);
-    actionMap.set('SHOW_BOARD', showBoard);
     actionMap.set('input.unknown', noMatch);
     actionMap.set('single_word_move', responseToPlayer);
     actionMap.set('dual_word_move', responseToPlayer);
+    actionMap.set('show_board', showBoard);
+    actionMap.set('new_surface', newSurface);
     app.handleRequest(actionMap);
 
     let databaseBoard = currentBoard.split("").map(function(x) {return parseInt(x)});

@@ -1,0 +1,27 @@
+[debug] [2017-10-09T02:54:26.736Z] ----------------------------------------------------------------------
+[debug] [2017-10-09T02:54:26.738Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\marce\AppData\Roaming\npm\node_modules\firebase-tools\bin\firebase serve --only functions
+[debug] [2017-10-09T02:54:26.738Z] CLI Version:   3.13.1
+[debug] [2017-10-09T02:54:26.738Z] Platform:      win32
+[debug] [2017-10-09T02:54:26.738Z] Node Version:  v7.0.0
+[debug] [2017-10-09T02:54:26.739Z] Time:          Sun Oct 08 2017 19:54:26 GMT-0700 (Pacific Daylight Time)
+[debug] [2017-10-09T02:54:26.739Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2017-10-09T02:54:26.748Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2017-10-09T02:54:26.748Z] > authorizing via signed-in user
+[debug] [2017-10-09T02:54:26.750Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/voice-tic-tac-toe  
+ Sun Oct 08 2017 19:54:26 GMT-0700 (Pacific Daylight Time)
+[debug] [2017-10-09T02:54:27.229Z] <<< HTTP RESPONSE 200
+[debug] [2017-10-09T02:54:27.229Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/voice-tic-tac-toe/tokens  
+ Sun Oct 08 2017 19:54:27 GMT-0700 (Pacific Daylight Time)
+[debug] [2017-10-09T02:54:27.751Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from 'C:\Users\marce\Documents\SourceCode\VoiceTicTacToe'...
+[info] 
+[info] i  functions: Preparing to emulate functions.
+[debug] [2017-10-09T02:54:28.069Z] >>> HTTP REQUEST GET https://appengine.googleapis.com/v1/apps/voice-tic-tac-toe  
+ Sun Oct 08 2017 19:54:28 GMT-0700 (Pacific Daylight Time)
+[debug] [2017-10-09T02:54:28.070Z] >>> HTTP REQUEST GET https://apikeys.googleapis.com/v1/projects/voice-tic-tac-toe/apiKeys  
+ Sun Oct 08 2017 19:54:28 GMT-0700 (Pacific Daylight Time)
+[debug] [2017-10-09T02:54:28.458Z] <<< HTTP RESPONSE 200
+[debug] [2017-10-09T02:54:28.564Z] <<< HTTP RESPONSE 200
+[info] +  functions: voiceTicTacToe: http://localhost:5000/voice-tic-tac-toe/us-central1/voiceTicTacToe
