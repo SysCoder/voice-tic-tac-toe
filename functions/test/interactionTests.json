@@ -1,0 +1,119 @@
+{
+  "fileName": "../index.js",
+  "methodName": "voiceBMI",
+  "tests": [
+    {
+      "name": "Imperial System",
+      "interactions": [
+        {
+          "utterance": "4 7 200 pounds",
+          "response": "At 4 7 and 200 pounds your BMI is 46.5. You are in the very severely obese category. Do you want me to calculate another BMI?"
+        },
+        {
+          "utterance": "4 feet 7 inches 210 pounds",
+          "response": "At 4 feet 7 inches and 210 pounds your BMI is 48.8. You are in the very severely obese category. Do you want me to calculate another BMI?"
+        },
+        {
+          "utterance": "4 7 inches 210 pounds",
+          "response": "At 4 7 inches and 210 pounds your BMI is 48.8. You are in the very severely obese category. Do you want me to calculate another BMI?"
+        },
+        {
+          "utterance": "4 foot 7 inches 210 pounds",
+          "response": "At 4 foot 7 inches and 210 pounds your BMI is 48.8. You are in the very severely obese category. Do you want me to calculate another BMI?"
+        },
+        {
+          "utterance": "4 foot 7 inch 210 pounds",
+          "response": "At 4 foot 7 inches and 210 pounds your BMI is 48.8. You are in the very severely obese category. Do you want me to calculate another BMI?"
+        },
+        {
+          "utterance": "4 foot 7 210 pounds",
+          "response": "At 4 foot 7 and 210 pounds your BMI is 48.8. You are in the very severely obese category. Do you want me to calculate another BMI?"
+        },
+
+        {
+          "utterance": "210 pounds",
+          "response": "At 210 pounds and 4 foot 7 your BMI is 48.8. You are in the very severely obese category. Do you want me to calculate another BMI?"
+        },
+        {
+          "utterance": "3 foot 8 98 pounds",
+          "response": "At 3 foot 8 and 98 pounds your BMI is 35.6. You are in the severely obese category. Do you want me to calculate another BMI?"
+        }
+      ]
+    },
+    {
+      "name": "Metric System",
+      "interactions": [
+        {
+          "utterance": "1.5 meters 84 kilos",
+          "response": "At 1.5 meters and 84 kilos your BMI is 37.3. You are in the severely obese category. Do you want me to calculate another BMI?"
+        },
+        {
+          "utterance": "1.8 meters 70 kilos",
+          "response": "At 1.8 meters and 70 kilos your BMI is 21.6. You are in the normal category. Do you want me to calculate another BMI?"
+        },
+        {
+          "utterance": "1.8 meters 70 kilo",
+          "response": "At 1.8 meters and 70 kilo your BMI is 21.6. You are in the normal category. Do you want me to calculate another BMI?"
+        },
+        {
+          "utterance": "1.8 meters 70 kilogram",
+          "response": "At 1.8 meters and 70 kilogram your BMI is 21.6. You are in the normal category. Do you want me to calculate another BMI?"
+        },
+        {
+          "utterance": "1.8 meters 70 kg",
+          "response": "At 1.8 meters and 70 kg your BMI is 21.6. You are in the normal category. Do you want me to calculate another BMI?"
+        },
+        {
+          "utterance": "1.8 m 70 kilos",
+          "response": "At 1.8 m and 70 kilos your BMI is 21.6. You are in the normal category. Do you want me to calculate another BMI?"
+        },
+        {
+          "utterance": "1.8 m 70 kilos",
+          "response": "At 1.8 m and 70 kilos your BMI is 21.6. You are in the normal category. Do you want me to calculate another BMI?"
+        },
+        {
+          "utterance": "1.3 meter 70 kilograms",
+          "response": "At 1.3 meter and 70 kilograms your BMI is 41.4. You are in the very severely obese category. Do you want me to calculate another BMI?"
+        },
+        {
+          "utterance": " 70 kilograms  1.3 meter",
+          "response": "At 70 kilograms and 1.3 meter your BMI is 41.4. You are in the very severely obese category. Do you want me to calculate another BMI?"
+        },
+        {
+          "utterance": " 70 kilokk  1.3 meter",
+          "response": "At 70 kilo and 1.3 meter your BMI is 41.4. You are in the very severely obese category. Do you want me to calculate another BMI?"
+        },
+        {
+          "utterance": " 65 kilokk",
+          "response": "At 65 kilo and 1.3 meter your BMI is 38.5. You are in the severely obese category. Do you want me to calculate another BMI?"
+        },
+        {
+          "utterance": " 1.4 m",
+          "response": "At 65 kilo and 1.4 m your BMI is 33.2. You are in the moderately obese category. Do you want me to calculate another BMI?"
+        }
+      ]
+    },
+    {
+      "name": "Metric System - Single Value - Test 1",
+      "interactions": [
+        {
+          "utterance": "1.5 meters",
+          "response": "What is your weight?"
+        }
+      ]
+    },
+    {
+      "name": "Metric System separate input for weight and height",
+      "interactions": [
+        {
+          "utterance": "1.4 meters",
+          "response": "What is your weight?"
+        },
+        {
+          "utterance": "65 kilos",
+          "response": "At 65 kilos and 1.4 meters your BMI is 33.2. You are in the moderately obese category. Do you want me to calculate another BMI?"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "dependencies": {
+    "actions-on-google": "^1.2.1",
+    "dashbot": "^9.2.0",
+    "dotenv": "^4.0.0",
+    "firebase-admin": "~4.2.1",
+    "firebase-functions": "^0.5.7",
+    "tic-tac-toe-ai-engine": "^1.0.9"
+  },
+  "private": true
+}

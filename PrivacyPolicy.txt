@@ -1,0 +1,25 @@
+https://sites.google.com/view/voicetictactoepp/home
+Voice Tic Tac Toe Privacy Policy
+This privacy policy has been compiled to better serve those who are concerned with how their 'Personally identifiable information' (PII) is being used online. PII, as used in US privacy law and information security, is information that can be used on its own or with other information to identify, contact, or locate a single person, or to identify an individual in context. Please read our privacy policy carefully to get a clear understanding of how we collect, use, protect or otherwise handle your Personally Identifiable Information in accordance with our website. 
+What personal information do we collect from the people that visit our blog, website or app? 
+Personal information is not saved.
+When do we collect information? 
+When playing a game, IDs and game play is recorded.
+How do we use your information? 
+We use IDs to allow users to continue their game after disconnecting with the service. We use game play data to improve game play.
+How do we protect visitor information? 
+The data is protected from Google to our server using HTTPS.
+Do we use 'cookies'? 
+We do not use cookies.
+Third Party Disclosure 
+We do collect personal information so therefore we do disclose personal information to third parties. Game play and interaction data will be shared with our analytic platform Dashbot.
+Third party links 
+There are no third party links.
+COPPA (Children Online Privacy Protection Act) 
+When it comes to the collection of personal information from children under 13, the Children's Online Privacy Protection Act (COPPA) puts parents in control. The Federal Trade Commission, the nation's consumer protection agency, enforces the COPPA Rule, which spells out what operators of websites and online services must do to protect children's privacy and safety online.
+
+We do not specifically market to children under 13
+Contacting Us 
+If there are any questions regarding this privacy policy you may contact us using the information below.
+mpelcher@gmail.com
+Last Edited on 2017-04-22
