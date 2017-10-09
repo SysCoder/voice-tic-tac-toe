@@ -4,7 +4,6 @@
 * The source code is in a very raw state. When this was built I opted for just getting it done vs. readability.
 
 # Wish list
-* Use https://github.com/actions-on-google/actions-on-google-nodejs
 * General readability improvements
 * Add a level that is called annoying that will tell the user when he/she lost before the game is over.
 
