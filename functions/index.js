@@ -4,7 +4,7 @@ require('dotenv').config();
 const dashbot = require('dashbot')("IhZXsQTiqY6PBqpXpZUY2rw44Yd2XAH6cBfe07Tq").google;
 const functions = require('firebase-functions');
 const App = require('actions-on-google').ApiAiApp;
-
+const VoiceRepeater = require('voice-repeater').VoiceRepeater;
 
 var ticTacToe = require('./tictactoe');
 
@@ -14,6 +14,9 @@ exports.voiceTicTacToe = functions.https.onRequest((request, response) => {
         request,
         response
     });
+
+    let voiceRepeater = new VoiceRepeater(app);
+
     const hasScreen = app.hasSurfaceCapability(app.SurfaceCapabilities.SCREEN_OUTPUT);
     const screenAvaiable = app.hasAvailableSurfaceCapabilities(app.SurfaceCapabilities.SCREEN_OUTPUT);
 
@@ -21,16 +24,12 @@ exports.voiceTicTacToe = functions.https.onRequest((request, response) => {
     console.log('Request headers: ' + JSON.stringify(request.headers));
     console.log('Request body: ' + JSON.stringify(request.body));
 
-    let currentBoard = app.getContext("game_board") !== null
+    const currentBoard = app.getContext("game_board") !== null
         ? app.getContextArgument("game_board", "game").value
         : "000000000";
-    let currentLevel = app.getContext("level") !== null
+    const currentLevel = app.getContext("level") !== null
         ? app.getContextArgument("level", "level").value
         : "Medium";
-
-    // console.log('processing event: %j', event);
-    // console.log(event);
-    // console.log("Original Request: ", event.originalRequest);
 
     function changeLevel(app) {
       let levelSetFromUser = app.getArgument("Levels");
@@ -39,6 +38,10 @@ exports.voiceTicTacToe = functions.https.onRequest((request, response) => {
       app.setContext("game_board", 100, {"game": currentBoard});
       app.setContext("level", 100, {"level": levelSetFromUser});
       app.ask(response);
+    }
+
+    function repeatLastStatment(app) {
+      app.ask(voiceRepeater.lastPromptWithPrefix());
     }
 
     // Needed for middle of the game
@@ -77,6 +80,7 @@ exports.voiceTicTacToe = functions.https.onRequest((request, response) => {
 
     const actionMap = new Map();
     actionMap.set('change_level', changeLevel);
+    actionMap.set('repeat_last_statement', repeatLastStatment);
     actionMap.set('restart_game', restartGame);
     actionMap.set('input.unknown', noMatch);
     actionMap.set('single_word_move', responseToPlayer);

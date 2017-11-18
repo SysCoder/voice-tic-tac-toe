@@ -7,7 +7,8 @@
     "dotenv": "^4.0.0",
     "firebase-admin": "~4.2.1",
     "firebase-functions": "^0.5.7",
-    "tic-tac-toe-ai-engine": "^1.0.9"
+    "tic-tac-toe-ai-engine": "^1.0.9",
+    "voice-repeater": "^1.0.0"
   },
   "private": true
 }

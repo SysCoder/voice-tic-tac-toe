@@ -1,0 +1,35 @@
+[debug] [2017-11-18T20:44:22.096Z] ----------------------------------------------------------------------
+[debug] [2017-11-18T20:44:22.098Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\marce\AppData\Roaming\npm\node_modules\firebase-tools\bin\firebase serve --only functions
+[debug] [2017-11-18T20:44:22.099Z] CLI Version:   3.15.2
+[debug] [2017-11-18T20:44:22.099Z] Platform:      win32
+[debug] [2017-11-18T20:44:22.099Z] Node Version:  v7.0.0
+[debug] [2017-11-18T20:44:22.099Z] Time:          Sat Nov 18 2017 12:44:22 GMT-0800 (Pacific Standard Time)
+[debug] [2017-11-18T20:44:22.099Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2017-11-18T20:44:22.107Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2017-11-18T20:44:22.107Z] > authorizing via signed-in user
+[debug] [2017-11-18T20:44:22.109Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2017-11-18T20:44:22.109Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token { refresh_token: '1/scWptoEnxfqHSmWfGJJceXhujtIw4GeowDTqca48Go8',
+  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
+  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
+  grant_type: 'refresh_token',
+  scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
+ Sat Nov 18 2017 12:44:22 GMT-0800 (Pacific Standard Time)
+[debug] [2017-11-18T20:44:22.278Z] <<< HTTP RESPONSE 200
+[debug] [2017-11-18T20:44:22.287Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/voice-tic-tac-toe  
+ Sat Nov 18 2017 12:44:22 GMT-0800 (Pacific Standard Time)
+[debug] [2017-11-18T20:44:22.815Z] <<< HTTP RESPONSE 200
+[debug] [2017-11-18T20:44:22.816Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/voice-tic-tac-toe/tokens  
+ Sat Nov 18 2017 12:44:22 GMT-0800 (Pacific Standard Time)
+[debug] [2017-11-18T20:44:23.322Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from 'C:\Users\marce\Documents\SourceCode\VoiceTicTacToe'...
+[info] 
+[info] i  functions: Preparing to emulate functions.
+[debug] [2017-11-18T20:44:23.682Z] >>> HTTP REQUEST GET https://appengine.googleapis.com/v1/apps/voice-tic-tac-toe  
+ Sat Nov 18 2017 12:44:23 GMT-0800 (Pacific Standard Time)
+[debug] [2017-11-18T20:44:23.682Z] >>> HTTP REQUEST GET https://apikeys.googleapis.com/v1/projects/voice-tic-tac-toe/apiKeys  
+ Sat Nov 18 2017 12:44:23 GMT-0800 (Pacific Standard Time)
+[debug] [2017-11-18T20:44:24.128Z] <<< HTTP RESPONSE 200
+[debug] [2017-11-18T20:44:24.174Z] <<< HTTP RESPONSE 200
+[info] +  functions: voiceTicTacToe: http://localhost:5000/voice-tic-tac-toe/us-central1/voiceTicTacToe
