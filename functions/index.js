@@ -39,14 +39,12 @@ exports.voiceTicTacToe = functions.https.onRequest((request, response) => {
     const currentLevel = currentLevelVar;
 
     function welcome(app) {
-      let levelSetFromUser = app.getArgument("Levels");
-
-      let intros = [
+      const intros = [
         "Hi, I am Voice Tic Tac Toe. I am ready to play. To make your move, you can say something like 'bottom' or 'top left.",
         "Hello, I am Voice Tic Tac Toe and I am ready to play! To make your move, you can say things like 'top right' or 'left.'",
         "Hi, I am Voice Tic Tac Toe. The board is ready. To make your move, you can say something like 'bottom' or  'up left.'",
       ];
-      let introsExistingUser = [
+      const introsExistingUser = [
         "Hi, it's good to see you again. ",
         "Hello, I am glad you could make it back! ",
         "Great, you came back! ",
