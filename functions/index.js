@@ -3,7 +3,7 @@
 require('dotenv').config();
 const dashbot = require('dashbot')("IhZXsQTiqY6PBqpXpZUY2rw44Yd2XAH6cBfe07Tq").google;
 const functions = require('firebase-functions');
-const App = require('actions-on-google').ApiAiApp;
+const App = require('actions-on-google').DialogflowApp;
 const VoiceRepeater = require('voice-repeater').VoiceRepeater;
 
 var ticTacToe = require('./tictactoe');
@@ -27,9 +27,16 @@ exports.voiceTicTacToe = functions.https.onRequest((request, response) => {
     const currentBoard = app.getContext("game_board") !== null
         ? app.getContextArgument("game_board", "game").value
         : "000000000";
-    const currentLevel = app.getContext("level") !== null
-        ? app.getContextArgument("level", "level").value
-        : "Medium";
+
+    let currentLevelVar = "Medium";
+    if (app.getContext("level") == null) {
+      if (app.userStorage.currentLevel) {
+        currentLevelVar = app.userStorage.currentLevel;
+      }
+    } else {
+      currentLevelVar = app.getContextArgument("level", "level").value;
+    }
+    const currentLevel = currentLevelVar;
 
     function changeLevel(app) {
       let levelSetFromUser = app.getArgument("Levels");
@@ -78,6 +85,106 @@ exports.voiceTicTacToe = functions.https.onRequest((request, response) => {
       }
     }
 
+    function responseToPlayer(app) {
+        var parameters = {"Location": app.getArgument("Location"), "Location1": app.getArgument("Location1")};
+        if (tryingToTripBot(parameters)) {
+          let tripUpReplies = [
+            "Um.... hold on... that does not make sense. Try another location",
+            "What are you trying to do? You know and I know, that is not a valid location.",
+            "Tricky tricky... that's invalid and you know it! Try again.",
+            "Are you trying to cause me to have an error? Please pick a sensible location.",
+            "Your move was " + createTextMove(parameters) + ". I moved.... wait, that does not make sense. Try again.",
+            "Your move was " + createTextMove(parameters) + ". Which does not make sense. Try again.",
+            "Your move was " + createTextMove(parameters) + ". Error, Error, Error, I am crashing! Psych!!! Do you want to play or just test me?",
+          ];
+          let tripUpReply = getRandomeElementInArray(tripUpReplies);
+          app.ask(tripUpReply);
+          return;
+        }
+
+        let currentBoard = app.getContext("game_board") !== null
+            ? app.getContextArgument("game_board", "game").value
+            : "000000000";
+        let databaseBoard = currentBoard.split("").map(function(x) {return parseInt(x)});
+        if (ticTacToe.determineWinner(databaseBoard) !== 0) {
+            databaseBoard = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        }
+        // console.log(parameters);
+        // User move.
+        var nextMove = ticTacToe.textMoveToArrayMove(parameters.Location, parameters.Location1);
+        if (isLocationUsed(nextMove, databaseBoard)) {
+            var player = isLocationUsed(nextMove, databaseBoard);
+            var responseBack = "";
+            if(player == 1) {
+                responseBack = "You have already moved there. Pick another location.";
+            } else {
+                responseBack = "I have already moved there. Pick another location.";
+            }
+            app.ask(responseBack);
+            return;
+        }
+
+        // console.log(nextMove, "player outside");
+        var board = ticTacToe.makeMove(nextMove, databaseBoard);
+        // console.log('Between user and computer');
+        // Computer move.
+        nextMove = ticTacToe.getNextMove(board, currentLevel);
+        var textNextMove = ticTacToe.arrayMoveToTextMove(nextMove);
+        // console.log("Board going in", board, nextMove);
+        board = ticTacToe.makeMove(nextMove, board);
+        // console.log("Board going out", board);
+
+
+        var outputBoard = board;
+
+        let sessionOutputBoard = null;
+        // Save to session state on device
+        // console.log("Used session board");
+        sessionOutputBoard = outputBoard.reduce(function(a, b) {return "" + a + b});
+
+        if (ticTacToe.determineWinner(board) === 3) {
+            var responseBack = "Your move was " + createTextMove(parameters) + ". Draw! Do you want to play again? You can change the level by saying \"Change level to easy.\"";
+
+            let response = displayBoardGoogleData(app, responseBack, sessionOutputBoard);
+
+            app.setContext("game_board", 100, {"game": "000000000"});
+            app.setContext("LEVEL", 100, {"level": currentLevel});
+            app.ask(response);
+            return;
+        }
+
+
+        if (ticTacToe.determineWinner(board) !== 0 && nextMove.length== [0, 0, 0, 0, 0, 0, 0, 0, 0].length && nextMove.every(function(v,i) { return v === [0, 0, 0, 0, 0, 0, 0, 0, 0][i]})) {
+            var responseBack = "Your move was " + createTextMove(parameters) +  ". " + "You won! Do you want to play again? You can change the level by saying \"Change level to impossible.\"";
+
+            let response = displayBoardGoogleData(app, responseBack, sessionOutputBoard);
+
+            app.setContext("game_board", 100, {"game": "000000000"});
+            app.setContext("LEVEL", 100, {"level": currentLevel});
+            app.ask(response);
+            return;
+        }
+
+
+        if (ticTacToe.determineWinner(outputBoard) !== 0) {
+            var responseBack = "Your move was " + createTextMove(parameters) + ". I moved " + createTextMove(textNextMove) + ". I won. Do you want to play again? You can change the level by saying \"Change level to easy.\"";
+            let response = displayBoardGoogleData(app, responseBack, sessionOutputBoard);
+            app.setContext("game_board", 100, {"game": "000000000"});
+            app.setContext("LEVEL", 100, {"level": currentLevel});
+            app.ask(response);
+            return;
+        }
+
+        var responseBack = "Your move was " + createTextMove(parameters) + ". I moved " + createTextMove(textNextMove);
+
+
+        let response = displayBoardGoogleData(app, responseBack, sessionOutputBoard);
+        app.setContext("game_board", 100, {"game": sessionOutputBoard});
+        app.setContext("LEVEL", 100, {"level": currentLevel});
+        app.ask(response);
+    }
+
+
     const actionMap = new Map();
     actionMap.set('change_level', changeLevel);
     actionMap.set('repeat_last_statement', repeatLastStatment);
@@ -109,106 +216,6 @@ function consecutiveCount(app, countName) {
       : 1;
   app.setContext("no_match", 1, {"count": count});
   return count;
-}
-
-function responseToPlayer(app) {
-    var parameters = {"Location": app.getArgument("Location"), "Location1": app.getArgument("Location1")};
-    if (tryingToTripBot(parameters)) {
-      let tripUpReplies = [
-        "Um.... hold on... that does not make sense. Try another location",
-        "What are you trying to do? You know and I know, that is not a valid location.",
-        "Tricky tricky... that's invalid and you know it! Try again.",
-        "Are you trying to cause me to have an error? Please pick a sensible location.",
-        "Your move was " + createTextMove(parameters) + ". I moved.... wait, that does not make sense. Try again.",
-        "Your move was " + createTextMove(parameters) + ". Which does not make sense. Try again.",
-        "Your move was " + createTextMove(parameters) + ". Error, Error, Error, I am crashing! Psych!!! Do you want to play or just test me?",
-      ];
-      let tripUpReply = getRandomeElementInArray(tripUpReplies);
-      app.ask(tripUpReply);
-      return;
-    }
-
-    let currentBoard = app.getContext("game_board") !== null
-        ? app.getContextArgument("game_board", "game").value
-        : "000000000";
-    let databaseBoard = currentBoard.split("").map(function(x) {return parseInt(x)});
-    let currentLevel = app.getContext("LEVEL") !== null ? app.getContext("LEVEL").value.level : "Medium";
-    if (ticTacToe.determineWinner(databaseBoard) !== 0) {
-        databaseBoard = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-    }
-    // console.log(parameters);
-    // User move.
-    var nextMove = ticTacToe.textMoveToArrayMove(parameters.Location, parameters.Location1);
-    if (isLocationUsed(nextMove, databaseBoard)) {
-        var player = isLocationUsed(nextMove, databaseBoard);
-        var responseBack = "";
-        if(player == 1) {
-            responseBack = "You have already moved there. Pick another location.";
-        } else {
-            responseBack = "I have already moved there. Pick another location.";
-        }
-        app.ask(responseBack);
-        return;
-    }
-
-    // console.log(nextMove, "player outside");
-    var board = ticTacToe.makeMove(nextMove, databaseBoard);
-    // console.log('Between user and computer');
-    // Computer move.
-    nextMove = ticTacToe.getNextMove(board, currentLevel);
-    var textNextMove = ticTacToe.arrayMoveToTextMove(nextMove);
-    // console.log("Board going in", board, nextMove);
-    board = ticTacToe.makeMove(nextMove, board);
-    // console.log("Board going out", board);
-
-
-    var outputBoard = board;
-
-    let sessionOutputBoard = null;
-    // Save to session state on device
-    // console.log("Used session board");
-    sessionOutputBoard = outputBoard.reduce(function(a, b) {return "" + a + b});
-
-    if (ticTacToe.determineWinner(board) === 3) {
-        var responseBack = "Your move was " + createTextMove(parameters) + ". Draw! Do you want to play again? You can change the level by saying \"Change level to easy.\"";
-
-        let response = displayBoardGoogleData(app, responseBack, sessionOutputBoard);
-
-        app.setContext("game_board", 100, {"game": "000000000"});
-        app.setContext("LEVEL", 100, {"level": currentLevel});
-        app.ask(response);
-        return;
-    }
-
-
-    if (ticTacToe.determineWinner(board) !== 0 && nextMove.length== [0, 0, 0, 0, 0, 0, 0, 0, 0].length && nextMove.every(function(v,i) { return v === [0, 0, 0, 0, 0, 0, 0, 0, 0][i]})) {
-        var responseBack = "Your move was " + createTextMove(parameters) +  ". " + "You won! Do you want to play again? You can change the level by saying \"Change level to impossible.\"";
-
-        let response = displayBoardGoogleData(app, responseBack, sessionOutputBoard);
-
-        app.setContext("game_board", 100, {"game": "000000000"});
-        app.setContext("LEVEL", 100, {"level": currentLevel});
-        app.ask(response);
-        return;
-    }
-
-
-    if (ticTacToe.determineWinner(outputBoard) !== 0) {
-        var responseBack = "Your move was " + createTextMove(parameters) + ". I moved " + createTextMove(textNextMove) + ". I won. Do you want to play again? You can change the level by saying \"Change level to easy.\"";
-        let response = displayBoardGoogleData(app, responseBack, sessionOutputBoard);
-        app.setContext("game_board", 100, {"game": "000000000"});
-        app.setContext("LEVEL", 100, {"level": currentLevel});
-        app.ask(response);
-        return;
-    }
-
-    var responseBack = "Your move was " + createTextMove(parameters) + ". I moved " + createTextMove(textNextMove);
-
-
-    let response = displayBoardGoogleData(app, responseBack, sessionOutputBoard);
-    app.setContext("game_board", 100, {"game": sessionOutputBoard});
-    app.setContext("LEVEL", 100, {"level": currentLevel});
-    app.ask(response);
 }
 
 function tryingToTripBot(parameters) {
