@@ -64,7 +64,7 @@ exports.voiceTicTacToe = functions.https.onRequest((request, response) => {
     function changeLevel(app) {
       let levelSetFromUser = app.getArgument("Levels");
       let response = displayBoardGoogleData(app, "Okay, curent level is: " + levelSetFromUser, currentBoard);
-
+      app.userStorage.currentLevel = levelSetFromUser;
       app.setContext("game_board", 100, {"game": currentBoard});
       app.setContext("level", 100, {"level": levelSetFromUser});
       app.ask(response);
