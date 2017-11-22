@@ -40,7 +40,7 @@ exports.voiceTicTacToe = functions.https.onRequest((request, response) => {
 
     function welcome(app) {
       const intros = [
-        "Hi, I am Voice Tic Tac Toe. I am ready to play. To make your move, you can say something like 'bottom' or 'top left.",
+        "Hi, I am Voice Tic Tac Toe. I am ready to play. To make your move, you can say something like 'bottom' or 'top left.'",
         "Hello, I am Voice Tic Tac Toe and I am ready to play! To make your move, you can say things like 'top right' or 'left.'",
         "Hi, I am Voice Tic Tac Toe. The board is ready. To make your move, you can say something like 'bottom' or  'up left.'",
       ];
@@ -51,7 +51,9 @@ exports.voiceTicTacToe = functions.https.onRequest((request, response) => {
         "Hello, welcome back! ",
       ];
       let response = displayBoardGoogleData(app, getRandomeElementInArray(intros), currentBoard);
-      if (app.getLastSeen()) {
+      let lastSeen = app.getLastSeen();
+      if (dateDiff("Days", lastSeen, new Date()) < 30) {
+        console.log("The number of days since seen: " + dateDiff("Days", lastSeen, new Date()));
         response = displayBoardGoogleData(
           app,
           getRandomeElementInArray(introsExistingUser) + "The current level is " + currentLevel + ". What's your move?",
@@ -59,6 +61,18 @@ exports.voiceTicTacToe = functions.https.onRequest((request, response) => {
         );
       }
       app.ask(response);
+    }
+
+    function dateDiff(datepart, fromdate, todate) {
+      datepart = datepart.charAt(0).toLowerCase();
+      var diff = Math.abs(todate - fromdate);
+      var divideBy = { w:604800000,
+                       d:86400000,
+                       h:3600000,
+                       m:60000,
+                       s:1000 };
+
+      return Math.floor(diff/divideBy[datepart]);
     }
 
     function changeLevel(app) {
